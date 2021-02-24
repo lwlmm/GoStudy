@@ -46,6 +46,42 @@ func postorderTraversal(root *TreeNode){
 	fmt.Println("NOde val: ", root.Val)
 }
 
+//通过dfs深度搜索，返回某个结点开始的从上至下所有value切片
+func dfsResult(root *TreeNode) []int {
+	result := make([]int, 0)
+	dfs(root, &result)
+	return result
+}
+
+//递归法前序遍历结点，用append扩展slice
+func dfs(root *TreeNode, result *[]int) {
+	if root == nil {					//递归返回条件
+		return
+	}
+	*result = append(*result, root.Val)	//加入本节点
+	dfs(root.Left, result)				
+	dfs(root.Right, result)
+}
+
+//分治法dfs深度搜索
+func dfsDivideResult(root *TreeNode) []int {
+	result := make([]int, 0)
+	if root == nil {
+		return result
+	}
+
+	//分治法：先左递归，再右递归。加上本节点、所有左节点、所有右节点
+	left := dfsDivideResult(root.Left)
+	right := dfsDivideResult(root.Right)
+
+	result = append(result, root.Val)
+	result = append(result, left...)	//不确定长度
+	result = append(result, right...)
+	
+	return result
+}
+
+
 func main() {
 
 	//构建一个二叉树
@@ -86,4 +122,8 @@ func main() {
 	fmt.Println()
 	postorderTraversal(root)
 	fmt.Println()
+
+	//fmt.Println(dfsResult(root))
+	fmt.Println(dfsResult(right1))
+	fmt.Println(dfsDivideResult(root))
 }
